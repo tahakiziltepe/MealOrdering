@@ -1,0 +1,20 @@
+﻿@inherits BaseButtonComponent
+
+<button 
+		class="btn@(IsSmall ? " btn-sm" : "") btn@(IsOutline ? "-outline" : "")-@Color" 
+		type="submit" 
+		disabled="@IsBusy"
+		onclick="@OnClick"
+		title="@ToolTipStr"
+
+>
+	<span class="bi bi-@Icon"></span>
+
+	@if (IsBusy)
+	{
+		<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+		<span class="sr-only">@IsBusyCaption</span>
+	}
+
+	@Caption
+</button>

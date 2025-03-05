@@ -1,0 +1,56 @@
+﻿@page "/buttontest"
+@page "/buttons"
+
+@inject ModalManager ModalManager
+
+<h3>ButtonTest</h3>
+
+
+<div class="container">
+	<div class="btn-toolbar">
+
+		<CustomEditButtonComponent OnClick="changeTitle" />
+		<CustomEditButtonComponent Caption="Edit Caption" Color="danger" Icon="pencil-fill" IsSmall="false"/>
+		<AddNewButtonComponent/>
+	</div>
+	<div>
+		<CustomEditButtonComponent Caption="Change Title" OnClick="changeTitle" />
+		<CustomEditButtonComponent Caption="Show Popup" OnClick="@(e => showPopup(title))" />
+		<CustomEditButtonComponent Caption="Delete Record" Color="danger" OnClick="@(e => showConfirmation(title))" />
+	</div>
+</div>
+
+@code {
+
+	[CascadingParameter]
+	IModalService Modal { get; set; }
+
+	private String title = "First Title";
+
+	private async void changeTitle()
+	{
+		title = "New Title!";
+	}
+
+	private async void showPopup(String title, String message = null)
+	{
+		await ModalManager.ShowMessageAsync(title, message != null ? message : "No Message", 3000);
+	}
+
+	async Task showConfirmation(String title)
+	{
+		var res = await ModalManager.ConfirmationAsync("Confirmation", "Are you sure?");
+
+		if (res)
+		{
+			showPopup(title, res.ToString() + ": Record has been deleted.");
+		}
+		else
+		{
+			showPopup(title, res.ToString() + ": Record has not been deleted.");
+		}
+	}
+
+
+
+}
