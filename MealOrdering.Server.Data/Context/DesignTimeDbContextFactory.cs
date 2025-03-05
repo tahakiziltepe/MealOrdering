@@ -12,14 +12,14 @@ namespace MealOrdering.Server.Data.Context
 	{
 		public MealOrderingDbContext CreateDbContext(string[] args)
 		{
-			//String connectionString = "postgresql://postgres:example@localhost:5432/mealordering";
-			String connectionString = "Server=(localdb)\\mssqllocaldb;Database=mealordering;Trusted_Connection=True;MultipleActiveResultSets=true";
-
 			var builder = new DbContextOptionsBuilder<MealOrderingDbContext>();
-			builder.UseSqlServer(connectionString);
 
+			//String connectionString = "Server=(localdb)\\mssqllocaldb;Database=mealordering;Trusted_Connection=True;MultipleActiveResultSets=true";
+			//builder.UseSqlServer(connectionString);
 
-			//builder.UseNpgsql(connectionString);
+			//String connectionString = "postgresql://postgres:example@localhost:5432/mealordering";
+			String connectionString = "Host=localhost;Port=5432;Database=mealordering;Username=postgres;Password=example;";
+			builder.UseNpgsql(connectionString);
 
 
 			return new MealOrderingDbContext(builder.Options);

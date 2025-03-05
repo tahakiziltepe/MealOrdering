@@ -3,16 +3,16 @@ using System;
 using MealOrdering.Server.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace MealOrdering.Server.Data.Migrations
 {
     [DbContext(typeof(MealOrderingDbContext))]
-    [Migration("20250304213312_initMig")]
+    [Migration("20250305111946_initMig")]
     partial class initMig
     {
         /// <inheritdoc />
@@ -20,23 +20,25 @@ namespace MealOrdering.Server.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "9.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("MealOrdering.Server.Data.Models.OrderItems", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("public.uuid_generate_v4()");
 
                     b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("create_date")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnName("createdate")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<Guid>("CreatedUserId")
                         .HasColumnType("uuid")
@@ -53,13 +55,13 @@ namespace MealOrdering.Server.Data.Migrations
                         .HasColumnName("order_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_order_item_id");
+                        .HasName("pk_orderItem_id");
 
                     b.HasIndex("CreatedUserId");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("order_items", "dbo");
+                    b.ToTable("order_items", "public");
                 });
 
             modelBuilder.Entity("MealOrdering.Server.Data.Models.Orders", b =>
@@ -67,17 +69,18 @@ namespace MealOrdering.Server.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("public.uuid_generate_v4()");
 
                     b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("create_date")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnName("createdate")
+                        .HasDefaultValueSql("NOW()");
 
-                    b.Property<Guid>("CreateUserId")
+                    b.Property<Guid>("CreatedUserId")
                         .HasColumnType("uuid")
-                        .HasColumnName("create_user_id");
+                        .HasColumnName("created_user_id");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -102,11 +105,11 @@ namespace MealOrdering.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_order_id");
 
-                    b.HasIndex("CreateUserId");
+                    b.HasIndex("CreatedUserId");
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("orders", "dbo");
+                    b.ToTable("orders", "public");
                 });
 
             modelBuilder.Entity("MealOrdering.Server.Data.Models.Suppliers", b =>
@@ -114,19 +117,18 @@ namespace MealOrdering.Server.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("public.uuid_generate_v4()");
 
                     b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("create_date")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnName("createdate")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasColumnName("is_active")
-                        .HasDefaultValueSql("true");
+                        .HasColumnName("isactive");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -143,7 +145,7 @@ namespace MealOrdering.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_supplier_id");
 
-                    b.ToTable("suppliers", "dbo");
+                    b.ToTable("suppliers", "public");
                 });
 
             modelBuilder.Entity("MealOrdering.Server.Data.Models.Users", b =>
@@ -151,13 +153,14 @@ namespace MealOrdering.Server.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("UUID_GENERATE_V4()");
 
                     b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_date")
-                        .HasDefaultValueSql("now()");
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("EMailAddress")
                         .IsRequired()
@@ -172,10 +175,8 @@ namespace MealOrdering.Server.Data.Migrations
                         .HasColumnName("first_name");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasColumnName("is_active")
-                        .HasDefaultValueSql("true");
+                        .HasColumnName("isactive");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -186,7 +187,7 @@ namespace MealOrdering.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_id");
 
-                    b.ToTable("users", "dbo");
+                    b.ToTable("user", "public");
                 });
 
             modelBuilder.Entity("MealOrdering.Server.Data.Models.OrderItems", b =>
@@ -212,9 +213,9 @@ namespace MealOrdering.Server.Data.Migrations
 
             modelBuilder.Entity("MealOrdering.Server.Data.Models.Orders", b =>
                 {
-                    b.HasOne("MealOrdering.Server.Data.Models.Users", "CreateUser")
+                    b.HasOne("MealOrdering.Server.Data.Models.Users", "CreatedUser")
                         .WithMany("Orders")
-                        .HasForeignKey("CreateUserId")
+                        .HasForeignKey("CreatedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_user_order_id");
@@ -226,7 +227,7 @@ namespace MealOrdering.Server.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_supplier_order_id");
 
-                    b.Navigation("CreateUser");
+                    b.Navigation("CreatedUser");
 
                     b.Navigation("Supplier");
                 });

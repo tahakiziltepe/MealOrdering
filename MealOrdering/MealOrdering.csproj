@@ -7,9 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MealOrdering.Server.Data\MealOrdering.Server.Data.csproj" />
+    <ProjectReference Include="..\MealOrdering.Shared\MealOrdering.Shared.csproj" />
   </ItemGroup>
 
 </Project>

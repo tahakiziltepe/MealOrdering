@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MealOrdering.Server.Data.Models
+namespace MealOrdering.Shared.DTO
 {
-	public class Orders
+	public class OrderDTO
 	{
 		public Guid Id { get; set; }
 
@@ -23,11 +23,7 @@ namespace MealOrdering.Server.Data.Models
 		public DateTime ExpireDate { get; set; }
 
 
-		public virtual Users CreatedUser { get; set; }
-
-		public virtual Suppliers Supplier { get; set; }
-
-		public virtual ICollection<OrderItems> OrderItems { get; set; }
-
+		public String CreatedUserFullName { get; set; }
+		public String SupplierName { get; set; }
 	}
 }
