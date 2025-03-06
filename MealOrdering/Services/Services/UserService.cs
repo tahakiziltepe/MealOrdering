@@ -4,6 +4,7 @@ using MealOrdering.Server.Data.Context;
 using MealOrdering.Services.Infrastructure;
 using MealOrdering.Shared.DTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MealOrdering.Services.Services
 {
@@ -11,11 +12,13 @@ namespace MealOrdering.Services.Services
 	{
 		private readonly IMapper mapper;
 		private readonly MealOrderingDbContext context;
+		private readonly ILogger<UserService> _logger;
 
-		public UserService(IMapper Mapper,  MealOrderingDbContext Context)
+		public UserService(IMapper Mapper,  MealOrderingDbContext Context, ILogger<UserService> logger)
 		{
 			mapper = Mapper;
 			context = Context;
+			_logger = logger;
 		}
         public async Task<UserDTO> CreateUser(UserDTO user)
 		{
@@ -55,10 +58,24 @@ namespace MealOrdering.Services.Services
 
 		public async Task<List<UserDTO>> GetUsers()
 		{
-			return await context.Users
-							.Where(x => x.IsActive)
-							.ProjectTo<UserDTO>(mapper.ConfigurationProvider)
-							.ToListAsync();
+			try
+			{
+				_logger.LogInformation("GetUsers() metodu çağrıldı.");
+
+				var users = await context.Users
+								.Where(x => x.IsActive)
+								.ProjectTo<UserDTO>(mapper.ConfigurationProvider)
+								.ToListAsync();
+
+				_logger.LogInformation($"GetUsers() metodu {users.Count} kullanıcı döndürdü.");
+
+				return users;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "GetUsers() metodunda hata oluştu.");
+				return new List<UserDTO>();
+			}
 		}
 
 		public async Task<UserDTO> UpdateUser(UserDTO user)
